@@ -1,0 +1,4 @@
+typer>=0.4.1
+xrpl-py>=1.5.0
+pydantic>=1.9.1
+orjson>=3.6.9
