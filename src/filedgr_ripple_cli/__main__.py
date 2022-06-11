@@ -65,9 +65,9 @@ def set_issuer(issuer: str,
 
 @main.command("set-distributor")
 def set_distributor(issuer: str,
-               domain: str = typer.Argument(None),
-               path: str = default_path,
-               network: NetworkChoices = "testnet") -> None:
+                    domain: str = typer.Argument(None),
+                    path: str = default_path,
+                    network: NetworkChoices = "testnet") -> None:
     issuer_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{issuer}")
     conn = RippleConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
 
@@ -100,27 +100,50 @@ def set_trustline(issuer: str,
     typer.echo(result)
 
 
-@main.command("create-nft")
-def create_nft(issuer: str,
-               distributor: str,
-               nft_id: str,
-               path: str = default_path,
-               network: NetworkChoices = "testnet"):
+@main.command("issue-nft")
+def issue_nft(issuer: str,
+              distributor: str,
+              code: str,
+              memo: str,
+              format: str,
+              path: str = default_path,
+              network: NetworkChoices = "testnet"):
+    issuer_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{distributor}")
+    distributor_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{issuer}")
+    conn = RippleConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
 
-    issuer_wallet = FileWalletLoader(f"{path}/wallets/{issuer}")
-    distributor_wallet = FileWalletLoader(f"{path}/wallets/{distributor}")
+    result = TransactionBuilder.issue_nft(
+        conn=conn,
+        issuer=issuer_wallet,
+        distributor=distributor_wallet,
+        code=code,
+        memo=memo,
+        format=format
+    )
+    typer.echo(result)
 
 
 @main.command("create-t-token")
-def create_t_token(name: str, path: str = default_path, network: NetworkChoices = "testnet"):
-    from filedgr_ripple_cli.my_io.file_io import MyFileIO
+def create_t_token(issuer: str,
+              distributor: str,
+              code: str,
+              memo: str,
+              format: str,
+              path: str = default_path,
+              network: NetworkChoices = "testnet"):
+    issuer_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{distributor}")
+    distributor_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{issuer}")
+    conn = RippleConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
 
-    wallet_json = MyFileIO.read_from_file(f"{path}/wallets/{name}")
-    wallet_dict = orjson.loads(wallet_json)
-
-    ripple_wallet = RippleWallet(**wallet_dict)
-
-    typer.echo(f"Created NFT from wallet: {wallet_json}, to wallet: ")
+    result = TransactionBuilder.issue_transaction_token(
+        conn=conn,
+        issuer=issuer_wallet,
+        distributor=distributor_wallet,
+        code=code,
+        memo=memo,
+        format=format
+    )
+    typer.echo(result)
 
 
 if __name__ == '__main__':
