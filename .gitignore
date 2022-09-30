@@ -2,3 +2,5 @@
 .python-version
 
 *.egg-info
+
+*__py_cache__
