@@ -8,7 +8,7 @@ import typer
 from filedgr_ripple_cli.dto.network import NetworkChoices, all_networks
 from filedgr_ripple_cli.ripple.connection import RippleConnection
 from filedgr_ripple_cli.ripple.tx import TransactionBuilder
-from filedgr_ripple_cli.ripple.wallet import RippleWallet, FileWalletLoader
+from filedgr_ripple_cli.ripple.wallet import FileWalletLoader
 
 default_path = f"{Path.home()}/.filedger-ripple-cli"
 main = typer.Typer()
@@ -117,7 +117,7 @@ def issue_nft(issuer: str,
         issuer=issuer_wallet,
         distributor=distributor_wallet,
         code=code,
-        memo=memo,
+        uri=memo,
         format=format
     )
     typer.echo(result)
