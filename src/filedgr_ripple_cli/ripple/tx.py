@@ -90,18 +90,13 @@ class TransactionBuilder:
     def issue_nft(cls: Type[TransactionBuilder],
                   conn: RippleConnection,
                   issuer: RippleWallet,
-                  uri: str,
-                  format: str) -> str:
-        memo = Memo(
-            memo_format=format.encode('utf-8').hex().upper()
-        )
+                  uri: str) -> str:
         mint_nft_tx = xrpl.models.transactions.NFTokenMint(
             nftoken_taxon=0,
             account=issuer.get_wallet().classic_address,
             uri=uri.encode(
                 'utf-8').hex().upper(),
-            flags=[NFTokenMintFlag.TF_BURNABLE, NFTokenMintFlag.TF_TRANSFERABLE],
-            memos=[memo]
+            flags=[NFTokenMintFlag.TF_BURNABLE, NFTokenMintFlag.TF_TRANSFERABLE]
         )
         mint_nft_prepared = xrpl.transaction.safe_sign_and_autofill_transaction(
             transaction=mint_nft_tx,

@@ -102,23 +102,16 @@ def set_trustline(issuer: str,
 
 @main.command("issue-nft")
 def issue_nft(issuer: str,
-              distributor: str,
-              code: str,
               memo: str,
-              format: str,
               path: str = default_path,
               network: NetworkChoices = "testnet"):
-    issuer_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{distributor}")
-    distributor_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{issuer}")
+    issuer_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{issuer}")
     conn = RippleConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
 
     result = TransactionBuilder.issue_nft(
         conn=conn,
         issuer=issuer_wallet,
-        distributor=distributor_wallet,
-        code=code,
-        uri=memo,
-        format=format
+        uri=memo
     )
     typer.echo(result)
 
