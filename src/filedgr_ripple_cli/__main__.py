@@ -8,7 +8,7 @@ import typer
 from filedgr_ripple_cli.dto.network import NetworkChoices, all_networks
 from filedgr_ripple_cli.ripple.connection import RippleConnection
 from filedgr_ripple_cli.ripple.tx import TransactionBuilder
-from filedgr_ripple_cli.ripple.wallet import RippleWallet, FileWalletLoader
+from filedgr_ripple_cli.ripple.wallet import FileWalletLoader
 
 default_path = f"{Path.home()}/.filedger-ripple-cli"
 main = typer.Typer()
@@ -102,23 +102,16 @@ def set_trustline(issuer: str,
 
 @main.command("issue-nft")
 def issue_nft(issuer: str,
-              distributor: str,
-              code: str,
               memo: str,
-              format: str,
               path: str = default_path,
               network: NetworkChoices = "testnet"):
-    issuer_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{distributor}")
-    distributor_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{issuer}")
+    issuer_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{issuer}")
     conn = RippleConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
 
     result = TransactionBuilder.issue_nft(
         conn=conn,
         issuer=issuer_wallet,
-        distributor=distributor_wallet,
-        code=code,
-        memo=memo,
-        format=format
+        uri=memo
     )
     typer.echo(result)
 

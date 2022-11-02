@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Type
 
-from xrpl.models import Memo
+from xrpl.models import Memo, NFTokenMintFlag
 
 from filedgr_ripple_cli.ripple.connection import RippleConnection
 from filedgr_ripple_cli.ripple.wallet import RippleWallet
@@ -90,38 +90,20 @@ class TransactionBuilder:
     def issue_nft(cls: Type[TransactionBuilder],
                   conn: RippleConnection,
                   issuer: RippleWallet,
-                  distributor: RippleWallet,
-                  code: str,
-                  memo: str,
-                  format: str) -> str:
-
-        enc_code = bytes.hex(code.encode("utf-8")).upper()
-        while len(enc_code) < 40:
-            enc_code += "0"
-
-        quantity = "0.000001"
-        memo = Memo(
-            memo_data=memo.encode(
-                'utf-8').hex().upper(),
-            memo_format=format.encode('utf-8').hex().upper()
-        )
-        send_token_tx = xrpl.models.transactions.Payment(
+                  uri: str) -> str:
+        mint_nft_tx = xrpl.models.transactions.NFTokenMint(
+            nftoken_taxon=0,
             account=issuer.get_wallet().classic_address,
-            destination=distributor.get_wallet().classic_address,
-            amount=xrpl.models.amounts.issued_currency_amount.IssuedCurrencyAmount(
-                currency=enc_code,
-                issuer=issuer.get_wallet().classic_address,
-                value=quantity
-            ),
-            memos=[memo]
+            uri=uri.encode(
+                'utf-8').hex().upper(),
+            flags=[NFTokenMintFlag.TF_BURNABLE, NFTokenMintFlag.TF_TRANSFERABLE]
         )
-
-        pay_prepared = xrpl.transaction.safe_sign_and_autofill_transaction(
-            transaction=send_token_tx,
+        mint_nft_prepared = xrpl.transaction.safe_sign_and_autofill_transaction(
+            transaction=mint_nft_tx,
             wallet=issuer.get_wallet(),
             client=conn.get_client(),
         )
-        response = xrpl.transaction.send_reliable_submission(pay_prepared, conn.get_client())
+        response = xrpl.transaction.send_reliable_submission(mint_nft_prepared, conn.get_client())
         return response
 
     @classmethod

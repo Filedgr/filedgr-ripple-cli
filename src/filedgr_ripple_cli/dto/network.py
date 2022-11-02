@@ -14,6 +14,7 @@ class NetworkChoices(Enum):
     ripple2 = "ripple2"
     testnet = "testnet"
     devnet = "devnet"
+    nft_devnet = "nft-devnet"
 
 
 all_networks = {
@@ -36,5 +37,9 @@ all_networks = {
     "devnet": Network(
         json_rpc_url="https://s.devnet.rippletest.net:51234/",
         ws_url="wss://s.devnet.rippletest.net/"
+    ),
+    "nft-devnet": Network(
+        json_rpc_url="http://xls20-sandbox.rippletest.net:51234",
+        ws_url="wss://xls20-sandbox.rippletest.net:51233"
     )
 }
