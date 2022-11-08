@@ -4,6 +4,7 @@ from pathlib import Path
 
 import orjson
 import typer
+from filedgr_nft_protobuf.serialize import serialize
 
 from filedgr_ripple_cli.dto.network import NetworkChoices, all_networks
 from filedgr_ripple_cli.ripple.connection import RippleConnection
@@ -102,28 +103,36 @@ def set_trustline(issuer: str,
 
 @main.command("issue-nft")
 def issue_nft(issuer: str,
-              memo: str,
+              id: str,
+              campaign: str,
+              uri: str,
               path: str = default_path,
               network: NetworkChoices = "testnet"):
     issuer_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{issuer}")
     conn = RippleConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
 
+    nft_uri = serialize(
+        nft_id=id,
+        campaign=campaign,
+        uri=uri
+    )
+
     result = TransactionBuilder.issue_nft(
         conn=conn,
         issuer=issuer_wallet,
-        uri=memo
+        uri=nft_uri.decode("utf8")
     )
     typer.echo(result)
 
 
 @main.command("create-t-token")
 def create_t_token(issuer: str,
-              distributor: str,
-              code: str,
-              memo: str,
-              format: str,
-              path: str = default_path,
-              network: NetworkChoices = "testnet"):
+                   distributor: str,
+                   code: str,
+                   memo: str,
+                   format: str,
+                   path: str = default_path,
+                   network: NetworkChoices = "testnet"):
     issuer_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{distributor}")
     distributor_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{issuer}")
     conn = RippleConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
