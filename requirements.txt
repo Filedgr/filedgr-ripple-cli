@@ -2,3 +2,4 @@ pydantic>=1.10.2
 typer>=0.7.0
 orjson>=3.8.1
 xrpl-py>=1.7.0
+filedgr-nft-protobuf>=1.0.0

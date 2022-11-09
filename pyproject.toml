@@ -14,15 +14,23 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
 ]
-keywords = ["filedgr", "xrpl", "nft", "serialization"]
-dependencies = ["protobuf>=4.21.9"]
+keywords = ["filedgr", "xrpl", "nft", "cli"]
+dependencies = [
+    "pydantic>=1.10.2",
+    "typer>=0.7.0",
+    "orjson>=3.8.1",
+    "xrpl-py>=1.7.0",
+    "filedgr-nft-protobuf>=1.0.0" ]
 
     [project.optional-dependencies]
     build = ["build", "twine"]
     dev   = ["black", "bumpver", "isort", "mypy", "pytest", "flake8"]
 
     [project.urls]
-    repository    = "https://github.com/Filedgr/filedgr-nft-protobuf-python"
+    repository    = "https://github.com/Filedgr/filedgr-ripple-cli"
+
+[project.scripts]
+    xrpl-cli = "filedgr_xrpl_cli.__main__:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -41,7 +49,7 @@ push            = false
         'current_version = "{version}"',
         'version = "{version}"',
     ]
-    "src/filedgr_nft_protobuf/__init__.py" = ["{version}"]
+    "src/filedgr_xrpl_cli/__init__.py" = ["{version}"]
 
 [tool.isort]
 profile                   = "black"
