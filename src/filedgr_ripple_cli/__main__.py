@@ -6,10 +6,10 @@ import orjson
 import typer
 from filedgr_nft_protobuf.serialize import serialize
 
-from filedgr_ripple_cli.dto.network import NetworkChoices, all_networks
-from filedgr_ripple_cli.ripple.connection import RippleConnection
-from filedgr_ripple_cli.ripple.tx import TransactionBuilder
-from filedgr_ripple_cli.ripple.wallet import FileWalletLoader
+from .dto.network import NetworkChoices, all_networks
+from .ripple.connection import RippleConnection
+from .ripple.tx import TransactionBuilder
+from .ripple.wallet import FileWalletLoader
 
 default_path = f"{Path.home()}/.filedger-ripple-cli"
 main = typer.Typer()
@@ -17,7 +17,7 @@ main = typer.Typer()
 
 @main.command("init")
 def init(path: str = default_path):
-    from filedgr_ripple_cli.my_io.file_io import MyFileIO
+    from .my_io.file_io import MyFileIO
 
     # Creating the directory if it does not exist
     MyFileIO.create_dir(path)
@@ -32,9 +32,9 @@ def init(path: str = default_path):
 
 @main.command("create-wallet")
 def create_wallet(name: str, dump: bool = True, path: str = default_path, network: NetworkChoices = "testnet") -> None:
-    from filedgr_ripple_cli.ripple.connection import RippleConnection
-    from filedgr_ripple_cli.ripple.wallet import RippleWallet
-    from filedgr_ripple_cli.my_io.file_io import MyFileIO
+    from .ripple.connection import RippleConnection
+    from .ripple.wallet import RippleWallet
+    from .my_io.file_io import MyFileIO
 
     conn = RippleConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
     if network == NetworkChoices.testnet:
