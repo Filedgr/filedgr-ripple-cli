@@ -3,8 +3,8 @@ from typing import Type
 
 from xrpl.models import Memo, NFTokenMintFlag
 
-from filedgr_ripple_cli.ripple.connection import RippleConnection
-from filedgr_ripple_cli.ripple.wallet import RippleWallet
+from .connection import XRPLConnection
+from .wallet import XRPLWallet
 
 import xrpl
 
@@ -13,8 +13,8 @@ class TransactionBuilder:
 
     @classmethod
     def set_issuer(cls: Type[TransactionBuilder],
-                   conn: RippleConnection,
-                   wallet: RippleWallet,
+                   conn: XRPLConnection,
+                   wallet: XRPLWallet,
                    domain: str = None) -> str:
         enc_domain = None
         if domain:
@@ -38,8 +38,8 @@ class TransactionBuilder:
 
     @classmethod
     def set_distrutor(cls: Type[TransactionBuilder],
-                      conn: RippleConnection,
-                      wallet: RippleWallet,
+                      conn: XRPLConnection,
+                      wallet: XRPLWallet,
                       domain: str = None):
         enc_domain = None
         if domain:
@@ -60,9 +60,9 @@ class TransactionBuilder:
 
     @classmethod
     def set_trustline(cls: Type[TransactionBuilder],
-                      conn: RippleConnection,
-                      issuer: RippleWallet,
-                      distributor: RippleWallet,
+                      conn: XRPLConnection,
+                      issuer: XRPLWallet,
+                      distributor: XRPLWallet,
                       code: str,
                       nft: bool) -> str:
 
@@ -88,8 +88,8 @@ class TransactionBuilder:
 
     @classmethod
     def issue_nft(cls: Type[TransactionBuilder],
-                  conn: RippleConnection,
-                  issuer: RippleWallet,
+                  conn: XRPLConnection,
+                  issuer: XRPLWallet,
                   uri: str) -> str:
         mint_nft_tx = xrpl.models.transactions.NFTokenMint(
             nftoken_taxon=0,
@@ -108,9 +108,9 @@ class TransactionBuilder:
 
     @classmethod
     def issue_transaction_token(cls: Type[TransactionBuilder],
-                                conn: RippleConnection,
-                                issuer: RippleWallet,
-                                distributor: RippleWallet,
+                                conn: XRPLConnection,
+                                issuer: XRPLWallet,
+                                distributor: XRPLWallet,
                                 code: str,
                                 memo: str,
                                 format: str) -> str:

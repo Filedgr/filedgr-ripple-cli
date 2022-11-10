@@ -6,18 +6,19 @@ import orjson
 import typer
 from filedgr_nft_protobuf.serialize import serialize
 
-from filedgr_ripple_cli.dto.network import NetworkChoices, all_networks
-from filedgr_ripple_cli.ripple.connection import RippleConnection
-from filedgr_ripple_cli.ripple.tx import TransactionBuilder
-from filedgr_ripple_cli.ripple.wallet import FileWalletLoader
+from nft_utils.id_gen import generate_nft_or_campaign_id
+from dto.network import NetworkChoices, all_networks
+from my_xrpl.connection import XRPLConnection
+from my_xrpl.tx import TransactionBuilder
+from my_xrpl.wallet import FileWalletLoader
 
-default_path = f"{Path.home()}/.filedger-ripple-cli"
+default_path = f"{Path.home()}/.filedger-xrpl-cli"
 main = typer.Typer()
 
 
 @main.command("init")
 def init(path: str = default_path):
-    from filedgr_ripple_cli.my_io.file_io import MyFileIO
+    from .my_io.file_io import MyFileIO
 
     # Creating the directory if it does not exist
     MyFileIO.create_dir(path)
@@ -31,16 +32,19 @@ def init(path: str = default_path):
 
 
 @main.command("create-wallet")
-def create_wallet(name: str, dump: bool = True, path: str = default_path, network: NetworkChoices = "testnet") -> None:
-    from filedgr_ripple_cli.ripple.connection import RippleConnection
-    from filedgr_ripple_cli.ripple.wallet import RippleWallet
-    from filedgr_ripple_cli.my_io.file_io import MyFileIO
+def create_wallet(name: str,
+                  dump: bool = True,
+                  path: str = default_path,
+                  network: NetworkChoices = "testnet") -> None:
+    from .my_xrpl.connection import XRPLConnection
+    from .my_xrpl.wallet import XRPLWallet
+    from .my_io.file_io import MyFileIO
 
-    conn = RippleConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
+    conn = XRPLConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
     if network == NetworkChoices.testnet:
-        wallet = RippleWallet.create_testnet_wallet(conn.get_client())
+        wallet = XRPLWallet.create_testnet_wallet(conn.get_client())
     else:
-        wallet = RippleWallet.create_wallet()
+        wallet = XRPLWallet.create_wallet()
 
     wallet_json = orjson.dumps(wallet.get_wallet().__dict__).decode("utf8")
     if dump:
@@ -54,7 +58,7 @@ def set_issuer(issuer: str,
                path: str = default_path,
                network: NetworkChoices = "testnet") -> None:
     issuer_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{issuer}")
-    conn = RippleConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
+    conn = XRPLConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
 
     result = TransactionBuilder.set_issuer(
         conn=conn,
@@ -70,7 +74,7 @@ def set_distributor(issuer: str,
                     path: str = default_path,
                     network: NetworkChoices = "testnet") -> None:
     issuer_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{issuer}")
-    conn = RippleConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
+    conn = XRPLConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
 
     result = TransactionBuilder.set_issuer(
         conn=conn,
@@ -89,7 +93,7 @@ def set_trustline(issuer: str,
                   network: NetworkChoices = "testnet") -> None:
     issuer_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{distributor}")
     distributor_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{issuer}")
-    conn = RippleConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
+    conn = XRPLConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
 
     result = TransactionBuilder.set_trustline(
         conn=conn,
@@ -103,16 +107,17 @@ def set_trustline(issuer: str,
 
 @main.command("issue-nft")
 def issue_nft(issuer: str,
-              id: str,
-              campaign: str,
               uri: str,
               path: str = default_path,
               network: NetworkChoices = "testnet"):
     issuer_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{issuer}")
-    conn = RippleConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
+    conn = XRPLConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
+
+    nft_id = generate_nft_or_campaign_id()
+    campaign = generate_nft_or_campaign_id()
 
     nft_uri = serialize(
-        nft_id=id,
+        nft_id=nft_id,
         campaign=campaign,
         uri=uri
     )
@@ -135,7 +140,7 @@ def create_t_token(issuer: str,
                    network: NetworkChoices = "testnet"):
     issuer_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{distributor}")
     distributor_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{issuer}")
-    conn = RippleConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
+    conn = XRPLConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
 
     result = TransactionBuilder.issue_transaction_token(
         conn=conn,
