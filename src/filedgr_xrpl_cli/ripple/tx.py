@@ -3,8 +3,8 @@ from typing import Type
 
 from xrpl.models import Memo, NFTokenMintFlag
 
-from filedgr_ripple_cli.ripple.connection import RippleConnection
-from filedgr_ripple_cli.ripple.wallet import RippleWallet
+from .connection import RippleConnection
+from .wallet import RippleWallet
 
 import xrpl
 

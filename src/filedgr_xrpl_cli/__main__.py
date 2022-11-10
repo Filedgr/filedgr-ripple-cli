@@ -6,12 +6,13 @@ import orjson
 import typer
 from filedgr_nft_protobuf.serialize import serialize
 
-from .dto.network import NetworkChoices, all_networks
-from .ripple.connection import RippleConnection
-from .ripple.tx import TransactionBuilder
-from .ripple.wallet import FileWalletLoader
+from nft_utils.id_gen import generate_nft_or_campaign_id
+from dto.network import NetworkChoices, all_networks
+from ripple.connection import RippleConnection
+from ripple.tx import TransactionBuilder
+from ripple.wallet import FileWalletLoader
 
-default_path = f"{Path.home()}/.filedger-ripple-cli"
+default_path = f"{Path.home()}/.filedger-xrpl-cli"
 main = typer.Typer()
 
 
@@ -31,7 +32,10 @@ def init(path: str = default_path):
 
 
 @main.command("create-wallet")
-def create_wallet(name: str, dump: bool = True, path: str = default_path, network: NetworkChoices = "testnet") -> None:
+def create_wallet(name: str,
+                  dump: bool = True,
+                  path: str = default_path,
+                  network: NetworkChoices = "testnet") -> None:
     from .ripple.connection import RippleConnection
     from .ripple.wallet import RippleWallet
     from .my_io.file_io import MyFileIO
@@ -103,16 +107,17 @@ def set_trustline(issuer: str,
 
 @main.command("issue-nft")
 def issue_nft(issuer: str,
-              id: str,
-              campaign: str,
               uri: str,
               path: str = default_path,
               network: NetworkChoices = "testnet"):
     issuer_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{issuer}")
     conn = RippleConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
 
+    nft_id = generate_nft_or_campaign_id()
+    campaign = generate_nft_or_campaign_id()
+
     nft_uri = serialize(
-        nft_id=id,
+        nft_id=nft_id,
         campaign=campaign,
         uri=uri
     )

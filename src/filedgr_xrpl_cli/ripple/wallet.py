@@ -1,10 +1,9 @@
 from __future__ import annotations
-
 from abc import ABC, abstractmethod
 from typing import Type
-
 from xrpl.clients import JsonRpcClient
 from xrpl.wallet import Wallet, generate_faucet_wallet
+from filedgr_xrpl_cli.my_io.file_io import MyFileIO
 
 
 class WalletLoader(ABC):
@@ -17,7 +16,6 @@ class WalletLoader(ABC):
 class FileWalletLoader(WalletLoader):
 
     def load_wallet(self, path: str) -> RippleWallet:
-        from filedgr_ripple_cli.my_io.file_io import MyFileIO
         from orjson import orjson
         wallet_json = MyFileIO.read_from_file(path)
         wallet = RippleWallet(**orjson.loads(wallet_json))
