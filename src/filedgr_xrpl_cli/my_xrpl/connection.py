@@ -1,7 +1,7 @@
 from xrpl.clients import JsonRpcClient
 
 
-class RippleConnection:
+class XRPLConnection:
 
     def __init__(self,  json_rpc_url: str):
         self.__json_rpc_url = json_rpc_url
