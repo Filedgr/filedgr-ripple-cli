@@ -37,7 +37,6 @@ def create_wallet(name: str,
                   dump: bool = True,
                   path: str = default_path,
                   network: NetworkChoices = "testnet") -> None:
-
     conn = XRPLConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
     if network == NetworkChoices.testnet:
         wallet = XRPLWallet.create_testnet_wallet(conn.get_client())
@@ -89,8 +88,8 @@ def set_trustline(issuer: str,
                   nft: bool = True,
                   path: str = default_path,
                   network: NetworkChoices = "testnet") -> None:
-    issuer_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{distributor}")
-    distributor_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{issuer}")
+    issuer_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{issuer}")
+    distributor_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{distributor}")
     conn = XRPLConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
 
     result = TransactionBuilder.set_trustline(
@@ -112,9 +111,6 @@ def issue_nft(issuer: str,
               network: NetworkChoices = "testnet"):
     issuer_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{issuer}")
     conn = XRPLConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
-
-    # nft_id = generate_nft_or_campaign_id()
-    # campaign = generate_nft_or_campaign_id()
 
     nft_uri = serialize(
         nft_id=nft_id,
@@ -138,8 +134,8 @@ def create_t_token(issuer: str,
                    format: str,
                    path: str = default_path,
                    network: NetworkChoices = "testnet"):
-    issuer_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{distributor}")
-    distributor_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{issuer}")
+    issuer_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{issuer}")
+    distributor_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{distributor}")
     conn = XRPLConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
 
     result = TransactionBuilder.issue_transaction_token(
@@ -149,6 +145,42 @@ def create_t_token(issuer: str,
         code=code,
         memo=memo,
         format=format
+    )
+    typer.echo(result)
+
+
+@main.command("burn-nft")
+def burn_nft(
+        issuer: str,
+        token_id: str,
+        path: str = default_path,
+        network: NetworkChoices = "testnet"
+):
+    issuer_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{issuer}")
+    conn = XRPLConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
+    result = TransactionBuilder.burn_nft(
+        conn=conn,
+        issuer=issuer_wallet,
+        token_id=token_id
+    )
+    typer.echo(result)
+
+
+@main.command("send-nft")
+def send_nft(
+        source: str,
+        destination: str,
+        token_id: str,
+        path: str = default_path,
+        network: NetworkChoices = "testnet"
+):
+    source_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{source}")
+    conn = XRPLConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
+    result = TransactionBuilder.send_nft(
+        conn=conn,
+        source=source_wallet,
+        destination=destination,
+        token_id=token_id
     )
     typer.echo(result)
 

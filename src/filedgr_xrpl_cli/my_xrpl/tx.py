@@ -32,15 +32,14 @@ class TransactionBuilder:
             wallet=wallet.get_wallet(),
             client=conn.get_client(),
         )
-
         response = xrpl.transaction.send_reliable_submission(cst_prepared, conn.get_client())
         return response
 
     @classmethod
-    def set_distrutor(cls: Type[TransactionBuilder],
-                      conn: XRPLConnection,
-                      wallet: XRPLWallet,
-                      domain: str = None):
+    def set_distributor(cls: Type[TransactionBuilder],
+                        conn: XRPLConnection,
+                        wallet: XRPLWallet,
+                        domain: str = None):
         enc_domain = None
         if domain:
             enc_domain = bytes.hex(domain.encode("ASCII"))
@@ -135,11 +134,49 @@ class TransactionBuilder:
             ),
             memos=[memo]
         )
-
         pay_prepared = xrpl.transaction.safe_sign_and_autofill_transaction(
             transaction=send_token_tx,
             wallet=issuer.get_wallet(),
             client=conn.get_client(),
         )
         response = xrpl.transaction.send_reliable_submission(pay_prepared, conn.get_client())
+        return response
+
+    @classmethod
+    def burn_nft(cls: Type[TransactionBuilder],
+                 conn: XRPLConnection,
+                 issuer: XRPLWallet,
+                 token_id: str
+                 ) -> str:
+        burn_nft_tx = xrpl.models.transactions.NFTokenBurn(
+            account=issuer.get_wallet().classic_address,
+            nftoken_id=token_id
+        )
+        burn_nft_prepared = xrpl.transaction.safe_sign_and_autofill_transaction(
+            transaction=burn_nft_tx,
+            wallet=issuer.get_wallet(),
+            client=conn.get_client(),
+        )
+        response = xrpl.transaction.send_reliable_submission(transaction=burn_nft_prepared, client=conn.get_client())
+        return response
+
+    @classmethod
+    def send_nft(cls: Type[TransactionBuilder],
+                 conn: XRPLConnection,
+                 source: XRPLWallet,
+                 destination: str,
+                 token_id) -> str:
+        offer_nft_tx = xrpl.models.transactions.NFTokenCreateOffer(
+            account=source.get_wallet().classic_address,
+            nftoken_id=token_id,
+            amount="0",
+            destination=destination,
+            flags=1
+        )
+        offer_nft_prepared = xrpl.transaction.safe_sign_and_autofill_transaction(
+            transaction=offer_nft_tx,
+            wallet=source.get_wallet(),
+            client=conn.get_client()
+        )
+        response = xrpl.transaction.send_reliable_submission(transaction=offer_nft_prepared, client=conn.get_client())
         return response
