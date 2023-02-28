@@ -17,6 +17,7 @@ classifiers = [
 keywords = ["filedgr", "xrpl", "nft", "cli"]
 dependencies = [
     "pydantic>=1.10.2",
+    "rich>=12.6.0",
     "typer>=0.7.0",
     "orjson>=3.8.1",
     "xrpl-py>=1.7.0",
@@ -30,7 +31,7 @@ dependencies = [
     repository    = "https://github.com/Filedgr/filedgr-ripple-cli"
 
 [project.scripts]
-    xrpl = "filedgr_xrpl_cli.__main__:main"
+    xrpl = "filedgr_xrpl_cli.__main__:app"
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -1,5 +1,6 @@
-pydantic>=1.10.2
+pydantic==1.10.5
+rich>=12.6.0
 typer>=0.7.0
-orjson>=3.8.1
+orjson==3.8.7
 xrpl-py>=1.7.0
 filedgr-nft-protobuf>=1.0.0
