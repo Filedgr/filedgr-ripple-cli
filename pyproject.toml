@@ -21,17 +21,18 @@ dependencies = [
     "typer>=0.7.0",
     "orjson>=3.8.1",
     "xrpl-py>=1.7.0",
-    "filedgr-nft-protobuf>=1.0.0" ]
+    "filedgr-nft-protobuf>=1.0.0",
+    "pyyaml>=6.0"]
 
-    [project.optional-dependencies]
-    build = ["build", "twine"]
-    dev   = ["black", "bumpver", "isort", "mypy", "pytest", "flake8"]
+[project.optional-dependencies]
+build = ["build", "twine"]
+dev = ["black", "bumpver", "isort", "mypy", "pytest", "flake8"]
 
-    [project.urls]
-    repository    = "https://github.com/Filedgr/filedgr-ripple-cli"
+[project.urls]
+repository = "https://github.com/Filedgr/filedgr-ripple-cli"
 
 [project.scripts]
-    xrpl = "filedgr_xrpl_cli.__main__:app"
+xrpl = "filedgr_xrpl_cli.__main__:app"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -40,20 +41,20 @@ exclude = ["tests*"]
 [tool.bumpver]
 current_version = "0.0.1-beta.0"
 version_pattern = "MAJOR.MINOR.PATCH"
-commit_message  = "bump version {old_version} -> {new_version}"
-commit          = false
-tag             = false
-push            = false
+commit_message = "bump version {old_version} -> {new_version}"
+commit = false
+tag = false
+push = false
 
-    [tool.bumpver.file_patterns]
-    "pyproject.toml" = [
-        'current_version = "{version}"',
-        'version = "{version}"',
-    ]
-    "src/filedgr_xrpl_cli/__init__.py" = ["{version}"]
+[tool.bumpver.file_patterns]
+"pyproject.toml" = [
+    'current_version = "{version}"',
+    'version = "{version}"',
+]
+"src/filedgr_xrpl_cli/__init__.py" = ["{version}"]
 
 [tool.isort]
-profile                   = "black"
-import_heading_stdlib     = "Standard library imports"
+profile = "black"
+import_heading_stdlib = "Standard library imports"
 import_heading_thirdparty = "Third party imports"
 import_heading_firstparty = "Reader imports"

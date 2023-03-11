@@ -49,12 +49,12 @@ def set_domain(
 
 
 @wallet_app.command()
-def set_trustline(issuer: str,
-                  distributor: str,
-                  code: str = uuid.uuid4(),
-                  nft: bool = True,
-                  path: str = default_path,
-                  network: NetworkChoices = "testnet") -> None:
+def trustline(issuer: str,
+              distributor: str,
+              code: str = uuid.uuid4(),
+              nft: bool = True,
+              path: str = default_path,
+              network: NetworkChoices = "testnet") -> None:
     issuer_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{issuer}")
     distributor_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{distributor}")
     conn = XRPLConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
@@ -65,28 +65,5 @@ def set_trustline(issuer: str,
         distributor=distributor_wallet,
         code=code,
         nft=nft
-    )
-    print(result)
-
-
-@wallet_app.command()
-def send_token(issuer: str,
-               distributor: str,
-               code: str,
-               memo: str,
-               format: str,
-               path: str = default_path,
-               network: NetworkChoices = "testnet"):
-    issuer_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{issuer}")
-    distributor_wallet = FileWalletLoader().load_wallet(f"{path}/wallets/{distributor}")
-    conn = XRPLConnection(json_rpc_url=all_networks.get(network.value).json_rpc_url)
-
-    result = TransactionBuilder.issue_transaction_token(
-        conn=conn,
-        issuer=issuer_wallet,
-        distributor=distributor_wallet,
-        code=code,
-        memo=memo,
-        format=format
     )
     print(result)

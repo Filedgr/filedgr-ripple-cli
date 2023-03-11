@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Type
+from typing import Type, List, Optional
 
 from xrpl.models import Memo, NFTokenMintFlag
 
@@ -7,6 +7,8 @@ from .connection import XRPLConnection
 from .wallet import XRPLWallet
 
 import xrpl
+
+from ..dto.memo import MyMemos
 
 
 class TransactionBuilder:
@@ -111,19 +113,23 @@ class TransactionBuilder:
                                 issuer: XRPLWallet,
                                 distributor: XRPLWallet,
                                 code: str,
-                                memo: str,
-                                format: str) -> str:
+                                memos: Optional[List[MyMemos]] = ()
+                                ) -> str:
 
         enc_code = bytes.hex(code.encode("utf-8")).upper()
         while len(enc_code) < 40:
             enc_code += "0"
 
         quantity = "0.000001"
-        memo = Memo(
-            memo_data=memo.encode(
-                'utf-8').hex().upper(),
-            memo_format=format.encode('utf-8').hex().upper()
-        )
+
+        # Formatting memos
+        memos_formated: List[Memo] = []
+        if len(memos) > 0:
+            memos_formated = [
+                Memo(memo_data=memo.memo.encode('utf-8').hex().upper(),
+                     memo_format=memo.memo_format.value.encode('utf-8').hex().upper()) for memo in memos]
+
+        # Sending the token
         send_token_tx = xrpl.models.transactions.Payment(
             account=issuer.get_wallet().classic_address,
             destination=distributor.get_wallet().classic_address,
@@ -132,7 +138,7 @@ class TransactionBuilder:
                 issuer=issuer.get_wallet().classic_address,
                 value=quantity
             ),
-            memos=[memo]
+            memos=memos_formated
         )
         pay_prepared = xrpl.transaction.safe_sign_and_autofill_transaction(
             transaction=send_token_tx,

@@ -4,3 +4,5 @@ typer>=0.7.0
 orjson==3.8.7
 xrpl-py>=1.7.0
 filedgr-nft-protobuf>=1.0.0
+pyyaml>=6.0
+

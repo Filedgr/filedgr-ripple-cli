@@ -3,6 +3,7 @@ import orjson
 import typer
 
 from filedgr_xrpl_cli.cli_commands.nfts import nft_app
+from filedgr_xrpl_cli.cli_commands.payment import payment_app
 from filedgr_xrpl_cli.cli_commands.wallets import wallet_app
 from filedgr_xrpl_cli.dto.network import all_networks
 from filedgr_xrpl_cli.nft_utils.id_gen import generate_nft_or_campaign_id
@@ -10,6 +11,7 @@ from filedgr_xrpl_cli.settings import default_path
 
 app = typer.Typer()
 app.add_typer(typer_instance=wallet_app, name="wallet")
+app.add_typer(typer_instance=payment_app, name="payment")
 app.add_typer(typer_instance=nft_app, name="nft")
 
 
