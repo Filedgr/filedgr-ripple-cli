@@ -1,0 +1,15 @@
+{
+  "schema": "ipfs://QmNpi8rcXEkohca8iXu7zysKKSJYqCvBJn3xJwga8jXqWU",
+  "nftType": "art.v0",
+  "name": "Eric's FuckCO2 Hoodie",
+  "description": "This NFT shows you the story of Eric's FuckCO2 Hoodie",
+  "image": "https://img.ltwebstatic.com/images3_pi/2022/08/10/1660097180ace8e2a77a528722e914c0f41051246a_thumbnail_600x.jpg",
+  "file": "https://de.shein.com/Turtleneck-Cut-Out-Eyelet-Detail-Jumper-p-11234219-cat-1734.html?onelink=1/2kb5uvh5esch&url_from=deadplasw2206226676617278M&cid=18732656550&setid=139809326061&adid=631448797094&pf=GOOGLE",
+  "attributes": [
+    {
+      "trait_type": "smartNft.url",
+      "description": "The URL to the smart NFT",
+      "value": "https://github.com/XRPLF/XRPL-Standards/discussions/69"
+    }
+  ]
+}

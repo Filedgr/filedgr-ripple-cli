@@ -10,9 +10,10 @@ class MemoFormat(Enum):
     CSV = 'csv'
     JSON = 'json'
     YAML = 'yaml'
-    PNG = 'png'
-    JPEG = 'jpeg'
-    JPG = 'jpg'
+    PNG = 'img/png'
+    JPEG = 'img/jpeg'
+    JPG = 'img/jpg'
+    WEBP = 'img/webp'
     ZIP = 'zip'
     GZ = 'gz'
 
