@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import Optional, List
 
 from orjson import orjson
@@ -8,8 +9,15 @@ def orjson_dumps(v, *, default):
     return orjson.dumps(v, default=default).decode()
 
 
-class Xls24dNftTypeAttribute(BaseModel):
-    trait_type: str
+class FiledgrArtV0NftTypeAttributeTraitEnum(Enum):
+    SMART_NFT_URI = "smartNftUri"
+    TX_RECEIVER = "transactionReceiver"
+    TX_TOKEN = "transactionToken"
+    TX_FLAG = "transactionFlag"
+
+
+class FiledgrArtV0NftTypeAttribute(BaseModel):
+    trait_type: FiledgrArtV0NftTypeAttributeTraitEnum
     description: Optional[str]
     value: str
 
@@ -18,7 +26,16 @@ class Xls24dNftTypeAttribute(BaseModel):
         json_dumps = orjson.dumps
 
 
-class Xls24dNftType(BaseModel):
+class FiledgrArtV0NftTypeCollection(BaseModel):
+    name: str
+    family: Optional[str]
+
+    class Config:
+        json_loads = orjson.loads
+        json_dumps = orjson.dumps
+
+
+class FiledgrArtV0NftType(BaseModel):
     """
     The Filegr NFT Type. For now we will use the art.v0 and use the open graph image as image part which is mandatory
     """
@@ -32,7 +49,8 @@ class Xls24dNftType(BaseModel):
     description: str
     image: str
     file: Optional[str]
-    attributes: Optional[List[Xls24dNftTypeAttribute]]
+    collection: Optional[FiledgrArtV0NftTypeCollection]
+    attributes: Optional[List[FiledgrArtV0NftTypeAttribute]]
 
     class Config:
         json_loads = orjson.loads
@@ -43,7 +61,7 @@ class Xls24dNftType(BaseModel):
         # }
 
     def add_attribute(self,
-                      trait_type: str,
+                      trait_type: FiledgrArtV0NftTypeAttributeTraitEnum,
                       value: str,
                       description: Optional[str]
                       ):
@@ -51,7 +69,11 @@ class Xls24dNftType(BaseModel):
             self.attributes = []
 
         self.attributes.append(
-            Xls24dNftTypeAttribute(trait_type=trait_type,
-                                   description=description,
-                                   value=value)
+            FiledgrArtV0NftTypeAttribute(trait_type=trait_type,
+                                         description=description,
+                                         value=value)
         )
+
+    def set_collection(self,
+                       collection: FiledgrArtV0NftTypeCollection):
+        self.collection = collection

@@ -91,13 +91,16 @@ class TransactionBuilder:
     def issue_nft(cls: Type[TransactionBuilder],
                   conn: XRPLConnection,
                   issuer: XRPLWallet,
-                  uri: str) -> str:
+                  uri: str,
+                  taxon: int = 1,
+                  fees: int = 0) -> str:
         mint_nft_tx = xrpl.models.transactions.NFTokenMint(
-            nftoken_taxon=0,
+            nftoken_taxon=taxon,
+            transfer_fee=fees,
             account=issuer.get_wallet().classic_address,
             uri=uri.encode(
                 'utf-8').hex().upper(),
-            flags=[NFTokenMintFlag.TF_BURNABLE, NFTokenMintFlag.TF_TRANSFERABLE]
+            flags=[NFTokenMintFlag.TF_BURNABLE, NFTokenMintFlag.TF_TRANSFERABLE, NFTokenMintFlag.TF_ONLY_XRP]
         )
         mint_nft_prepared = xrpl.transaction.safe_sign_and_autofill_transaction(
             transaction=mint_nft_tx,
